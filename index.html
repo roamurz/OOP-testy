@@ -1,0 +1,1110 @@
+<!DOCTYPE html>
+<html lang="ru" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>C++ ООП — Подготовка к контрольной работе (ИГЭУ)</title>
+    <!-- Подключение Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Шрифты Inter и JetBrains Mono -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <!-- Highlight.js для подсветки синтаксиса C++ -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/cpp.min.js"></script>
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    },
+                    colors: {
+                        darkbg: '#0b0f19',
+                        cardbg: '#131b2e',
+                        codebg: '#0d1322',
+                        bordercol: '#1e293b',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #0b0f19;
+            color: #e2e8f0;
+            overflow-x: hidden;
+        }
+        pre::-webkit-scrollbar {
+            height: 6px;
+        }
+        pre::-webkit-scrollbar-track {
+            background: #0d1322;
+            border-radius: 8px;
+        }
+        pre::-webkit-scrollbar-thumb {
+            background: #334155;
+            border-radius: 8px;
+        }
+        pre::-webkit-scrollbar-thumb:hover {
+            background: #475569;
+        }
+        .hljs {
+            background: transparent !important;
+            padding: 0 !important;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade-in {
+            animation: fadeIn 0.25s ease-out forwards;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between selection:bg-indigo-500/30 selection:text-indigo-200">
+
+    <!-- Верхняя навигационная панель -->
+    <header class="border-b border-slate-800/80 bg-slate-900/70 backdrop-blur-md sticky top-0 z-20">
+        <div class="max-w-3xl mx-auto px-4 py-3.5 flex items-center justify-between gap-2">
+            <button onclick="goHome()" class="flex items-center gap-3 text-left cursor-pointer group focus:outline-none">
+                <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center shadow-lg shadow-indigo-500/20 font-mono font-bold text-white text-sm group-hover:scale-105 transition-transform">
+                    C++
+                </div>
+                <div>
+                    <h1 class="font-bold text-slate-100 text-sm sm:text-base leading-tight group-hover:text-indigo-300 transition-colors">Тренажёр по ООП (C++)</h1>
+                    <p class="text-xs text-slate-400">Билет КР + Методичка ЛР №5</p>
+                </div>
+            </button>
+
+            <div class="flex items-center gap-2">
+                <button id="home-btn" onclick="goHome()" class="hidden text-xs font-medium px-3 py-1.5 rounded-xl bg-slate-800/80 hover:bg-slate-700 text-slate-300 border border-slate-700/70 transition-colors cursor-pointer">
+                    К выбору режима
+                </button>
+                <div id="header-score-badge" class="hidden items-center gap-2 bg-slate-800/80 border border-slate-700/70 px-3 py-1.5 rounded-xl text-xs font-medium text-slate-300">
+                    <span class="hidden sm:inline">Верно:</span>
+                    <span id="live-score" class="text-emerald-400 font-bold text-sm">0</span>
+                    <span class="text-slate-500">/</span>
+                    <span id="total-questions-top" class="text-slate-400">22</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Основной контейнер -->
+    <main class="flex-1 w-full max-w-3xl mx-auto px-4 py-6 sm:py-8 flex flex-col justify-center">
+
+        <!-- ЭКРАН 1: СТАРТОВЫЙ С ВЫБОРОМ РЕЖИМА -->
+        <section id="start-screen" class="bg-cardbg border border-slate-800 rounded-2xl p-6 sm:p-8 shadow-2xl animate-fade-in">
+            <div class="flex flex-wrap items-center gap-2 mb-4">
+                <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/25 text-indigo-400 text-xs font-semibold">
+                    ⚡ 22 вопроса с кодом C++
+                </span>
+                <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/25 text-amber-300 text-xs font-semibold">
+                    📄 Включая 9 реальных вопросов из билета
+                </span>
+            </div>
+
+            <h2 class="text-2xl sm:text-3xl font-extrabold text-white tracking-tight mb-3">
+                Подготовка к тесту и контрольной по ООП
+            </h2>
+            <p class="text-slate-400 text-sm sm:text-base leading-relaxed mb-6">
+                Внутри собраны точные вопросы с твоего экзаменационного листа (включая разбор вузовских опечаток при вёрстке в Word) и 13 новых вопросов, составленных по тем же шаблонам на основе твоих лабораторных (<code class="text-indigo-300 bg-slate-800/80 px-1.5 py-0.5 rounded font-mono text-xs">Bus</code>, <code class="text-indigo-300 bg-slate-800/80 px-1.5 py-0.5 rounded font-mono text-xs">Student</code>, <code class="text-indigo-300 bg-slate-800/80 px-1.5 py-0.5 rounded font-mono text-xs">Product</code>, <code class="text-indigo-300 bg-slate-800/80 px-1.5 py-0.5 rounded font-mono text-xs">FoodItem</code>).
+            </p>
+
+            <!-- Выбор режима (вкладки-карточки) -->
+            <div class="mb-6">
+                <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-3">
+                    1. Выбери режим тренировки:
+                </label>
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3" id="mode-selector">
+                    <button type="button" onclick="selectMode('all')" data-mode="all" class="mode-card text-left p-4 rounded-xl border-2 border-indigo-500 bg-indigo-950/30 transition-all cursor-pointer">
+                        <div class="flex items-center justify-between mb-1.5">
+                            <span class="text-xs font-bold px-2 py-0.5 rounded bg-indigo-500/20 text-indigo-300">Полный</span>
+                            <span class="font-mono text-xs font-bold text-indigo-400">22 вопр.</span>
+                        </div>
+                        <div class="font-bold text-white text-sm mb-1">Все вопросы подряд</div>
+                        <p class="text-xs text-slate-400 leading-snug">Билет КР + все темы из методички ЛР №5</p>
+                    </button>
+
+                    <button type="button" onclick="selectMode('exam')" data-mode="exam" class="mode-card text-left p-4 rounded-xl border-2 border-slate-800 bg-slate-900/60 hover:border-slate-700 transition-all cursor-pointer">
+                        <div class="flex items-center justify-between mb-1.5">
+                            <span class="text-xs font-bold px-2 py-0.5 rounded bg-amber-500/20 text-amber-300">Из билета</span>
+                            <span class="font-mono text-xs font-bold text-amber-400">9 вопр.</span>
+                        </div>
+                        <div class="font-bold text-white text-sm mb-1">Только билет КР</div>
+                        <p class="text-xs text-slate-400 leading-snug">Точные задания с листов контрольной работы</p>
+                    </button>
+
+                    <button type="button" onclick="selectMode('labs')" data-mode="labs" class="mode-card text-left p-4 rounded-xl border-2 border-slate-800 bg-slate-900/60 hover:border-slate-700 transition-all cursor-pointer">
+                        <div class="flex items-center justify-between mb-1.5">
+                            <span class="text-xs font-bold px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300">По лабам</span>
+                            <span class="font-mono text-xs font-bold text-emerald-400">13 вопр.</span>
+                        </div>
+                        <div class="font-bold text-white text-sm mb-1">В стиле КР по ЛР</div>
+                        <p class="text-xs text-slate-400 leading-snug">Наследование, virtual, new[]/delete[], const</p>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Подсказка по управлению -->
+            <div class="flex items-center justify-between bg-slate-900/60 border border-slate-800/80 px-4 py-3 rounded-xl text-xs text-slate-400 mb-6">
+                <span>⌨️ Поддерживается управление с клавиатуры:</span>
+                <span class="font-mono text-slate-300">клавиши <strong>1–4</strong> — ответ, <strong>Enter</strong> — далее</span>
+            </div>
+
+            <div class="flex flex-col sm:flex-row items-center gap-3">
+                <button onclick="startQuiz(false)" class="w-full sm:w-auto flex-1 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white font-semibold py-3.5 px-6 rounded-xl shadow-lg shadow-indigo-600/25 transition-all active:scale-[0.98] cursor-pointer text-center">
+                    Начать тест (<span id="start-btn-count">22</span> вопросов)
+                </button>
+                <button onclick="startQuiz(true)" class="w-full sm:w-auto bg-slate-800 hover:bg-slate-700 text-slate-200 font-medium py-3.5 px-5 rounded-xl border border-slate-700 transition-all active:scale-[0.98] cursor-pointer text-sm">
+                    Перемешать 🔀
+                </button>
+            </div>
+        </section>
+
+        <!-- ЭКРАН 2: ТЕСТИРОВАНИЕ -->
+        <section id="quiz-screen" class="hidden flex-col gap-5 animate-fade-in">
+            <!-- Прогресс-бар -->
+            <div class="bg-cardbg border border-slate-800 rounded-2xl p-4 shadow-lg">
+                <div class="flex flex-wrap items-center justify-between gap-2 text-xs font-medium mb-2.5">
+                    <span class="text-slate-400">Вопрос <strong id="current-q-num" class="text-white">1</strong> из <span id="total-q-num">22</span></span>
+                    <div class="flex items-center gap-2">
+                        <span id="source-badge" class="px-2.5 py-0.5 rounded-lg font-semibold">Из билета КР</span>
+                        <span id="topic-badge" class="px-2.5 py-0.5 rounded-lg bg-indigo-500/15 text-indigo-300 border border-indigo-500/25">Тема</span>
+                    </div>
+                </div>
+                <div class="w-full h-2.5 bg-slate-800 rounded-full overflow-hidden">
+                    <div id="progress-bar" class="h-full bg-gradient-to-r from-indigo-500 to-purple-500 rounded-full transition-all duration-300" style="width: 5%;"></div>
+                </div>
+            </div>
+
+            <!-- Карточка вопроса -->
+            <div class="bg-cardbg border border-slate-800 rounded-2xl p-5 sm:p-7 shadow-2xl">
+                <h2 id="question-text" class="text-lg sm:text-xl font-bold text-white leading-snug mb-4">
+                    Текст вопроса
+                </h2>
+
+                <!-- Блок кода C++ (если есть в вопросе) -->
+                <div id="code-wrapper" class="hidden mb-5 rounded-xl bg-codebg border border-slate-800/90 overflow-hidden">
+                    <div class="flex items-center justify-between px-3.5 py-2 bg-slate-900/90 border-b border-slate-800/80 text-[11px] font-mono text-slate-400">
+                        <div class="flex items-center gap-1.5">
+                            <span class="w-2.5 h-2.5 rounded-full bg-rose-500/70"></span>
+                            <span class="w-2.5 h-2.5 rounded-full bg-amber-500/70"></span>
+                            <span class="w-2.5 h-2.5 rounded-full bg-emerald-500/70"></span>
+                            <span class="ml-1.5">main.cpp</span>
+                        </div>
+                        <span>C++</span>
+                    </div>
+                    <pre class="p-4 text-xs sm:text-sm font-mono leading-relaxed overflow-x-auto"><code id="question-code" class="language-cpp"></code></pre>
+                </div>
+
+                <!-- Варианты ответов -->
+                <div id="options-container" class="flex flex-col gap-3">
+                    <!-- Кнопки генерируются через JS -->
+                </div>
+
+                <!-- Блок мгновенного объяснения ("Разбор и ловушки") -->
+                <div id="explanation-box" class="hidden mt-6 rounded-xl p-4 sm:p-5 border transition-all animate-fade-in">
+                    <div class="flex items-start gap-3">
+                        <div id="explanation-icon" class="w-7 h-7 rounded-lg flex items-center justify-center shrink-0 font-bold text-sm mt-0.5"></div>
+                        <div class="flex-1">
+                            <h3 id="explanation-title" class="font-bold text-sm sm:text-base mb-1"></h3>
+                            <p id="explanation-text" class="text-slate-300 text-xs sm:text-sm leading-relaxed whitespace-pre-line"></p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Кнопка перехода к следующему вопросу -->
+                <div id="next-btn-wrapper" class="hidden mt-6 flex justify-end">
+                    <button id="next-btn" onclick="nextQuestion()" class="w-full sm:w-auto bg-indigo-600 hover:bg-indigo-500 text-white font-semibold py-3 px-6 rounded-xl shadow-lg shadow-indigo-600/20 transition-all active:scale-[0.98] cursor-pointer flex items-center justify-center gap-2">
+                        <span>Следующий вопрос</span>
+                        <span>→</span>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- ЭКРАН 3: ФИНАЛЬНЫЕ РЕЗУЛЬТАТЫ -->
+        <section id="result-screen" class="hidden bg-cardbg border border-slate-800 rounded-2xl p-6 sm:p-8 shadow-2xl animate-fade-in">
+            <div class="text-center mb-6">
+                <div id="result-emoji" class="text-5xl mb-3">🏆</div>
+                <h2 class="text-2xl sm:text-3xl font-extrabold text-white mb-2">Тест завершён!</h2>
+                <p id="result-subtitle" class="text-slate-400 text-sm sm:text-base"></p>
+            </div>
+
+            <!-- Карточка статистики -->
+            <div class="grid grid-cols-3 gap-3 mb-6">
+                <div class="bg-slate-900/70 border border-slate-800 rounded-xl p-3.5 text-center">
+                    <div class="text-xs text-slate-400 mb-1">Правильно</div>
+                    <div id="final-correct" class="text-xl sm:text-2xl font-extrabold text-emerald-400">0</div>
+                </div>
+                <div class="bg-slate-900/70 border border-slate-800 rounded-xl p-3.5 text-center">
+                    <div class="text-xs text-slate-400 mb-1">Ошибок</div>
+                    <div id="final-wrong" class="text-xl sm:text-2xl font-extrabold text-rose-400">0</div>
+                </div>
+                <div class="bg-slate-900/70 border border-slate-800 rounded-xl p-3.5 text-center">
+                    <div class="text-xs text-slate-400 mb-1">Результат</div>
+                    <div id="final-percent" class="text-xl sm:text-2xl font-extrabold text-indigo-400">0%</div>
+                </div>
+            </div>
+
+            <!-- Разбор слабых тем -->
+            <div id="weak-topics-section" class="mb-7">
+                <h3 class="text-sm font-bold uppercase tracking-wider text-slate-400 mb-3">Разбор ошибок и слабых тем</h3>
+                <div id="weak-topics-list" class="flex flex-col gap-2.5">
+                    <!-- Заполняется динамически -->
+                </div>
+            </div>
+
+            <!-- Кнопки перезапуска -->
+            <div class="flex flex-col sm:flex-row gap-3">
+                <button onclick="startQuiz(false)" class="flex-1 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white font-semibold py-3.5 px-6 rounded-xl shadow-lg shadow-indigo-600/25 transition-all active:scale-[0.98] cursor-pointer">
+                    Пройти режим заново
+                </button>
+                <button id="retry-mistakes-btn" onclick="retryMistakes()" class="hidden flex-1 bg-amber-600/20 hover:bg-amber-600/30 text-amber-300 border border-amber-500/40 font-semibold py-3.5 px-6 rounded-xl transition-all active:scale-[0.98] cursor-pointer">
+                    Отработать ошибки (<span id="mistakes-count">0</span>)
+                </button>
+                <button onclick="goHome()" class="sm:w-auto bg-slate-800 hover:bg-slate-700 text-slate-200 font-medium py-3.5 px-5 rounded-xl border border-slate-700 transition-all active:scale-[0.98] cursor-pointer text-sm">
+                    Сменить режим
+                </button>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Футер -->
+    <footer class="border-t border-slate-800/60 py-4 text-center text-xs text-slate-500">
+        Тренажёр по ООП C++ • ИГЭУ • Билет КР + Методичка ЛР №5
+    </footer>
+
+    <script>
+        // =========================================================================
+        // БАЗА ИЗ 22 ВОПРОСОВ:
+        // 1–9: Точные вопросы из экзаменационного билета студента
+        // 10–22: Вопросы в стиле вуза по материалам лекций и методички ЛР №5
+        // =========================================================================
+        const allQuestions = [
+            // --- БЛОК 1: ОРИГИНАЛЬНЫЕ ВОПРОСЫ ИЗ БИЛЕТА КР (9 вопросов) ---
+            {
+                id: 1,
+                category: "exam",
+                topic: "Принципы ООП",
+                question: "1. Что из этого списка не относится к базовым принципам ООП:",
+                code: null,
+                options: [
+                    "Преобразование",
+                    "Полиморфизм",
+                    "Инкапсуляция",
+                    "Наследование"
+                ],
+                correct: 0,
+                explanation: "Разбор и ловушки: В теоретическом введении к лабораторным работам перечислены базовые принципы ООП: абстракция данных, инкапсуляция, наследование и полиморфизм. «Преобразование» к ним не относится."
+            },
+            {
+                id: 2,
+                category: "exam",
+                topic: "Понятие класса",
+                question: "2. Класс — это:",
+                code: null,
+                options: [
+                    "любой тип данных, определяемый пользователем",
+                    "тип данных, определяемый пользователем и сочетающий в себе данные и функции их обработки",
+                    "структура, для которой в программе имеются функции работы с нею",
+                    "область оперативной памяти, выделяемая при запуске программы"
+                ],
+                correct: 1,
+                explanation: "Разбор и ловушки: Не путай с первым вариантом! Просто «любой пользовательский тип» — это слишком широко (под это подходят и перечисления enum, и typedef). Главная фишка класса в том, что он объединяет в себе данные (поля) и функции их обработки (методы)."
+            },
+            {
+                id: 3,
+                category: "exam",
+                topic: "Свойства класса",
+                question: "3. Свойство класса это ......",
+                code: null,
+                options: [
+                    "любые данные, которыми можно характеризовать объект класса",
+                    "переменная класса",
+                    "функции, определенные внутри класса",
+                    "оператор выбора членов"
+                ],
+                correct: 1,
+                explanation: "Разбор и ловушки: В терминологии курса «свойство» (или поле/атрибут) класса — это именно переменная класса, а функции внутри класса называются методами (функциями-членами)."
+            },
+            {
+                id: 4,
+                category: "exam",
+                topic: "Вывод кода (DateClass)",
+                question: "4. Что будет выведено на экран?",
+                code: `#include <iostream>
+class DateClass
+{
+public:
+    int m_day;
+    int m_month;
+    int m_year;
+    void print()
+    {
+        std::cout << m_day << '/' << m_month << '/' << m_year;
+    }
+};
+int main()
+{
+    DateClass today{12, 11, 2018};
+    today.m_day = 18;
+    today.print();
+    return 0;
+}`,
+                options: [
+                    "18/11/2018",
+                    "12/11/2018",
+                    "18.11.2018",
+                    "Ошибка компиляции (поля закрыты)"
+                ],
+                correct: 0,
+                explanation: "Разбор и ловушки:\n1) Поля объявлены в секции public:, поэтому строка today.m_day = 18; легально перезаписывает 12 на 18.\n2) В методе print() разделителем стоит слэш '/', а не точка.\n3) Примечание по билету: на бумажном листе в конце строки today.print(); при вёрстке в Word случайно приклеилось слово DateClass — в тесте это опечатка составителя, вопрос проверяет именно перезапись поля m_day и вывод 18/11/2018."
+            },
+            {
+                id: 5,
+                category: "exam",
+                topic: "Компиляция класса (Human)",
+                question: "5. Что будет выведено при компиляции?",
+                code: `class Human{
+    string Name;
+    int Age;
+    string Hender;`,
+                options: [
+                    "Ошибка компиляции",
+                    "Ничего (пустой вывод в консоль)",
+                    "Предупреждение компилятора, но программа запустится",
+                    "Выделится память под три поля класса"
+                ],
+                correct: 0,
+                explanation: "Разбор и ловушки: Сразу три причины для ошибки компиляции:\n1) Не подключена библиотека #include <string>.\n2) Не указано пространство имён std::string (или using namespace std;), поэтому компилятор не знает тип string.\n3) Объявление класса не закрыто фигурной скобкой и точкой с запятой };."
+            },
+            {
+                id: 6,
+                category: "exam",
+                topic: "Конструктор и деструктор",
+                question: "6. Выберите правильное объявление и определение конструктора и деструктора в классе Test:",
+                code: `// Вариант 1:
+class Test {
+public:
+    Test();
+    ~Test();
+};
+Test::Test() {}
+Test::~Test() {}
+
+// Вариант 2:
+class Test {
+    Test() {};
+    ~Test():{};
+};
+
+// Вариант 3:
+class Test {
+public:
+    Test() {};
+    ~Test():{};
+};
+
+// Вариант 4:
+class Test {
+public:
+    Test();
+    ~Test();
+    Test() {}
+    ~Test() {}
+};`,
+                options: [
+                    "Вариант 1",
+                    "Вариант 2",
+                    "Вариант 3",
+                    "Вариант 4"
+                ],
+                correct: 0,
+                explanation: "Разбор и ловушки:\n• Вариант 1 — единственный синтаксически безупречный: внутри класса в секции public: объявлены прототипы Test(); и ~Test();, а снаружи они определены через оператор :: (Test::Test() и Test::~Test()).\n• Вариант 2 — нет public: (конструктор в private) и лишнее двоеточие в ~Test():{}.\n• Вариант 3 — опечатка с двоеточием после круглых скобок ~Test():{}.\n• Вариант 4 — повторное объявление (redefinition) конструктора и деструктора внутри одного класса."
+            },
+            {
+                id: 7,
+                category: "exam",
+                topic: "Модификаторы доступа",
+                question: "7. Что из перечисленного не является модификатором доступа:",
+                code: null,
+                options: [
+                    "public",
+                    "protected",
+                    "private",
+                    "override"
+                ],
+                correct: 3,
+                explanation: "Разбор и ловушки: В C++ ровно три модификатора (спецификатора) доступа: public, protected и private. Слово override — это спецификатор переопределения виртуального метода при наследовании, к правам доступа оно отношения не имеет."
+            },
+            {
+                id: 8,
+                category: "exam",
+                topic: "Указатели и вызов методов",
+                question: "8. Выберите правильный вариант создания объекта и вызова метода Run(int x, int y):",
+                code: `// Во всех вариантах задан класс:
+class Func {
+public:
+    Func() { /*...*/ }
+    void Run(int x, int y) { /*...*/ }
+};
+
+// Вариант 1: Func* f3 = new Func(); f3->Run();
+// Вариант 2: Func f1 = new Func();  f1.Run(2, 3);
+// Вариант 3: Func f1 = new Func();  f1.Run();
+// Вариант 4: Func* f3 = new Func(); f3->Run(1, 2);`,
+                options: [
+                    "Вариант 1",
+                    "Вариант 2",
+                    "Вариант 3",
+                    "Вариант 4"
+                ],
+                correct: 3,
+                explanation: "Разбор и ловушки (метод исключения):\n• Оператор new Func() возвращает адрес в памяти (указатель Func*), поэтому слева обязательна звёздочка: Func* f3 = new Func();. Варианты 2 и 3 (Func f1 = new Func();) сразу отпадают.\n• Метод Run(int x, int y) ждёт два аргумента. В варианте 1 он вызван без аргументов f3->Run(); — это ошибка.\n• В варианте 4 правильно объявлен указатель Func* f3 и через стрелку -> переданы два числа: f3->Run(1, 2);."
+            },
+            {
+                id: 9,
+                category: "exam",
+                topic: "Понятие объекта",
+                question: "9. Объект — это …",
+                code: null,
+                options: [
+                    "экземпляр класса",
+                    "любая функция внутри класса",
+                    "модификатор доступа к данным",
+                    "заголовочный файл с расширением .h"
+                ],
+                correct: 0,
+                explanation: "Разбор и ловушки: Класс — это чертёж (новый тип данных), а объект (например, Bus b;) — это конкретный экземпляр класса, созданный в памяти по этому чертежу."
+            },
+
+            // --- БЛОК 2: НОВЫЕ ВОПРОСЫ В СТИЛЕ УНИВЕРА ПО ЛАБАМ (13 вопросов) ---
+            {
+                id: 10,
+                category: "labs",
+                topic: "Доступ по умолчанию (private)",
+                question: "10. Что будет выведено при компиляции этого фрагмента из лабораторной работы?",
+                code: `class Student {
+    char name[30];
+    int kurs;
+public:
+    Student() { kurs = 1; }
+};
+
+int main() {
+    Student s;
+    std::cout << s.kurs;
+    return 0;
+}`,
+                options: [
+                    "На экран выведется 1",
+                    "Ошибка компиляции: поле kurs по умолчанию находится в секции private",
+                    "На экран выведется 0",
+                    "Ошибка компиляции: конструктор Student() не может присваивать значения"
+                ],
+                correct: 1,
+                explanation: "Разбор и ловушки: В C++ (в отличие от struct) все поля и методы внутри class по умолчанию являются private, пока не встретится слово public: или protected:. Попытка прочитать s.kurs напрямую в main() вызовет ошибку компиляции."
+            },
+            {
+                id: 11,
+                category: "labs",
+                topic: "Порядок конструкторов и деструкторов",
+                question: "11. В каком порядке сработают конструкторы и деструкторы при запуске программы из ЛР №5?",
+                code: `class Product { /* ... */ };
+class FoodItem : public Product { /* ... */ };
+
+int main() {
+    FoodItem milk("Молоко", 89.5, 7);
+    return 0;
+}`,
+                options: [
+                    "Конструктор FoodItem → Конструктор Product → Деструктор FoodItem → Деструктор Product",
+                    "Конструктор Product → Конструктор FoodItem → Деструктор FoodItem → Деструктор Product",
+                    "Конструктор Product → Конструктор FoodItem → Деструктор Product → Деструктор FoodItem",
+                    "Вызовутся только конструктор и деструктор FoodItem"
+                ],
+                correct: 1,
+                explanation: "Разбор и ловушки: Правило из методички: конструкторы базовых классов выполняются в порядке наследования (сначала родитель Product, затем наследник FoodItem — «от фундамента к крыше»), а деструкторы — строго в обратном порядке (сначала ~FoodItem, затем ~Product — «сначала сносят крышу, потом фундамент»)."
+            },
+            {
+                id: 12,
+                category: "labs",
+                topic: "Наследование и protected",
+                question: "12. Какие члены базового класса Product унаследует и сможет использовать внутри своих методов класс FoodItem?",
+                code: `class Product {
+private:
+    int id;
+protected:
+    string name;
+public:
+    double price;
+};
+
+class FoodItem : public Product { /* ... */ };`,
+                options: [
+                    "Только public (price)",
+                    "Только public и protected (price и name); поле id из private не наследуется",
+                    "Все три поля: id, name и price",
+                    "Только protected (name)"
+                ],
+                correct: 1,
+                explanation: "Разбор и ловушки: Из методички: «Все члены класса из разделов public и protected наследуются, а члены из раздела private – нет». Члены раздела protected закрыты для main(), но доступны внутри самого базового класса и всех его наследников."
+            },
+            {
+                id: 13,
+                category: "labs",
+                topic: "Передача аргументов базовому классу",
+                question: "13. Как правильно передать аргументы из конструктора производного класса FoodItem в конструктор базового класса Product?",
+                code: `class Product {
+protected:
+    string name;
+    double price;
+public:
+    Product(string n, double p) : name(n), price(p) {}
+};`,
+                options: [
+                    "FoodItem(string n, double p, int d) : Product(n, p) { days = d; }",
+                    "FoodItem(string n, double p, int d) { Product(n, p); days = d; }",
+                    "FoodItem(string n, double p, int d) :: Product(n, p) { days = d; }",
+                    "FoodItem(string n, double p, int d) -> Product(n, p) { days = d; }"
+                ],
+                correct: 0,
+                explanation: "Разбор и ловушки: Конструкторы базовых классов не наследуются. Для передачи аргументов конструктору родителя используется список инициализации через одинарное двоеточие после скобок: конструктор_производного(арг) : base(арг) { ... }. Вызов Product(n, p); внутри фигурных скобок просто создаст временный безымянный объект и выдаст ошибку компиляции."
+            },
+            {
+                id: 14,
+                category: "labs",
+                topic: "Динамический массив объектов",
+                question: "14. Как правильно создать динамический массив из n объектов класса Bus и затем корректно освободить память?",
+                code: `int n = 5;
+// Выберите верную пару строк:`,
+                options: [
+                    "Bus spis = new Bus[n];  ...  delete spis;",
+                    "Bus* spis = new Bus[n]; ...  delete[] spis;",
+                    "Bus* spis = new Bus(n); ...  delete[] spis;",
+                    "Bus spis[n];            ...  delete[] spis;"
+                ],
+                correct: 1,
+                explanation: "Разбор и ловушки:\n• new Bus[n] с квадратными скобками выделяет память под массив из n объектов и возвращает указатель Bus*.\n• Круглые скобки new Bus(n) создали бы всего ОДИН объект, передав n в конструктор.\n• Для удаления массива, созданного через new[], обязательно используется delete[] spis; с квадратными скобками."
+            },
+            {
+                id: 15,
+                category: "labs",
+                topic: "Указатель на объект (->)",
+                question: "15. Как правильно вызвать метод show() для объекта, созданного через указатель?",
+                code: `Bus* ptr = new Bus;
+// Как вызвать метод show()?`,
+                options: [
+                    "ptr.show();",
+                    "ptr->show();",
+                    "ptr::show();",
+                    "&ptr.show();"
+                ],
+                correct: 1,
+                explanation: "Разбор и ловушки: Если у тебя обычный объект (Bus b;), используется точка: b.show(). Если у тебя указатель на объект (Bus* ptr;), обращение к его полям и методам выполняется через оператор стрелка -> (ptr->show())."
+            },
+            {
+                id: 16,
+                category: "labs",
+                topic: "Оператор :: вне класса",
+                question: "16. Что означает синтаксис void Bus::show() при описании метода за пределами класса?",
+                code: `class Bus {
+public:
+    void show();
+};
+
+void Bus::show() {
+    std::cout << "Bus info";
+}`,
+                options: [
+                    "Метод show() является статическим и вызывается без создания объекта",
+                    "Оператор :: (разрешения области видимости) указывает, что функция show() принадлежит классу Bus",
+                    "Класс Bus наследует функцию show() из глобальной области видимости",
+                    "Метод show() объявлен как виртуальный"
+                ],
+                correct: 1,
+                explanation: "Разбор и ловушки: Когда определение метода выносят за пределы тела класса { ... };, перед именем функции обязательно ставится имя_класса::, чтобы компилятор понял, к какому именно классу относится эта функция."
+            },
+            {
+                id: 17,
+                category: "labs",
+                topic: "Свойства деструктора",
+                question: "17. Какое утверждение о деструкторе класса в C++ является НЕВЕРНЫМ?",
+                code: `class Students {
+public:
+    ~Students() {
+        std::cout << "Memory cleaned";
+    }
+};`,
+                options: [
+                    "Имя деструктора начинается со знака тильды ~ и совпадает с именем класса",
+                    "Деструктор вызывается автоматически при уничтожении объекта (например, при delete)",
+                    "Деструктор может принимать входные параметры, если нужно передать флаг очистки",
+                    "Деструктор не имеет типа возвращаемого значения"
+                ],
+                correct: 2,
+                explanation: "Разбор и ловушки: В вопросе спрашивается, что НЕВЕРНО! Деструктор НИКОГДА не имеет входных параметров (скобки всегда пустые ~Students()) и поэтому не может быть перегружен — у класса бывает только один деструктор."
+            },
+            {
+                id: 18,
+                category: "labs",
+                topic: "Спецификаторы наследования",
+                question: "18. Что произойдёт, если при наследовании указать спецификатор private?",
+                code: `class Product {
+public:
+    void showProduct() {}
+};
+
+class ElectronicDevice : private Product {
+    // ...
+};
+
+int main() {
+    ElectronicDevice tv;
+    tv.showProduct();
+    return 0;
+}`,
+                options: [
+                    "Программа выведет данные о товаре, так как showProduct() был public",
+                    "Ошибка компиляции: при private-наследовании все public и protected члены Product стали private внутри ElectronicDevice",
+                    "Метод showProduct() перейдёт в раздел protected",
+                    "Компилятор автоматически заменит private на public"
+                ],
+                correct: 1,
+                explanation: "Разбор и ловушки: Из теории к ЛР №5: «Если доступ при наследовании имеет значение private, то все члены разделов public и protected базового класса становятся членами раздела private производного класса». Поэтому вызов tv.showProduct() из main() запрещён."
+            },
+            {
+                id: 19,
+                category: "labs",
+                topic: "Чисто виртуальные функции",
+                question: "19. Как в базовом классе Shape объявляется чисто виртуальная (чисто абстрактная) функция area()?",
+                code: `class Shape {
+public:
+    // Какая строка делает класс абстрактным?
+};`,
+                options: [
+                    "abstract double area();",
+                    "virtual double area() = 0;",
+                    "void virtual area() = null;",
+                    "double area() override = 0;"
+                ],
+                correct: 1,
+                explanation: "Разбор и ловушки: Из методички: «Чисто абстрактные виртуальные функции при объявлении в классе приравниваются к нулю». Синтаксис: virtual тип имя(аргументы) = 0;."
+            },
+            {
+                id: 20,
+                category: "labs",
+                topic: "Абстрактные классы",
+                question: "20. Что произойдёт при компиляции этого кода с абстрактным классом Shape?",
+                code: `class Shape {
+public:
+    virtual double area() = 0;
+};
+
+int main() {
+    Shape s;
+    return 0;
+}`,
+                options: [
+                    "Создастся объект s, а метод area() будет возвращать 0",
+                    "Ошибка компиляции: нельзя создавать объекты абстрактного класса",
+                    "Программа скомпилируется, но упадет при запуске",
+                    "Создастся пустой указатель на Shape"
+                ],
+                correct: 1,
+                explanation: "Разбор и ловушки: Из методички: «Абстрактные классы используются только для наследования, так как объекты таких классов не могут быть созданы». Строка Shape s; вызовет ошибку компиляции."
+            },
+            {
+                id: 21,
+                category: "labs",
+                topic: "Константные методы (const)",
+                question: "21. Что гарантирует ключевое слово const в конце заголовка метода getMileage()?",
+                code: `class Bus {
+    double mileage;
+public:
+    double getMileage() const {
+        return mileage;
+    }
+};`,
+                options: [
+                    "Возвращаемое значение нельзя сохранить в обычную переменную",
+                    "Метод не имеет права изменять поля (переменные-члены) данного объекта",
+                    "Метод можно вызывать только из конструктора",
+                    "Поле mileage становится константой для всей программы"
+                ],
+                correct: 1,
+                explanation: "Разбор и ловушки: Модификатор const после списка параметров метода запрещает этому методу менять состояние объекта (любое присваивание вида mileage = 100; внутри него вызовет ошибку компиляции)."
+            },
+            {
+                id: 22,
+                category: "labs",
+                topic: "Указатель на базовый класс",
+                question: "22. Продолжите правило из первого абзаца теоретического введения к ЛР №5: «Указателю на объект базового класса можно присвоить...»",
+                code: `class Product { /* базовый */ };
+class FoodItem : public Product { /* производный */ };
+
+Product* ptr = new FoodItem(); // Допустимо ли это?`,
+                options: [
+                    "Нет, это ошибка компиляции — типы указателей не совпадают",
+                    "Да, указателю на базовый класс можно присвоить адрес объекта производного класса",
+                    "Да, но только если наследование объявлено как private",
+                    "Нет, присваивать можно только наоборот: FoodItem* ptr = new Product();"
+                ],
+                correct: 1,
+                explanation: "Разбор и ловушки: Дословная цитата из методички: «Указателю на объект базового класса можно присвоить значение указателя на объект производного класса». Это основа полиморфизма в C++, так как любой FoodItem одновременно является Product."
+            }
+        ];
+
+        // Состояние приложения
+        let selectedMode = 'all'; // 'all' | 'exam' | 'labs'
+        let currentQuestions = [];
+        let currentIndex = 0;
+        let score = 0;
+        let wrongQuestions = [];
+        let isAnswered = false;
+
+        // DOM элементы
+        const startScreen = document.getElementById('start-screen');
+        const quizScreen = document.getElementById('quiz-screen');
+        const resultScreen = document.getElementById('result-screen');
+
+        const homeBtn = document.getElementById('home-btn');
+        const headerScoreBadge = document.getElementById('header-score-badge');
+        const liveScoreEl = document.getElementById('live-score');
+        const totalQuestionsTopEl = document.getElementById('total-questions-top');
+        const startBtnCountEl = document.getElementById('start-btn-count');
+
+        const currentQNumEl = document.getElementById('current-q-num');
+        const totalQNumEl = document.getElementById('total-q-num');
+        const sourceBadgeEl = document.getElementById('source-badge');
+        const topicBadgeEl = document.getElementById('topic-badge');
+        const progressBarEl = document.getElementById('progress-bar');
+
+        const questionTextEl = document.getElementById('question-text');
+        const codeWrapperEl = document.getElementById('code-wrapper');
+        const questionCodeEl = document.getElementById('question-code');
+        const optionsContainerEl = document.getElementById('options-container');
+
+        const explanationBoxEl = document.getElementById('explanation-box');
+        const explanationIconEl = document.getElementById('explanation-icon');
+        const explanationTitleEl = document.getElementById('explanation-title');
+        const explanationTextEl = document.getElementById('explanation-text');
+        const nextBtnWrapperEl = document.getElementById('next-btn-wrapper');
+        const nextBtnEl = document.getElementById('next-btn');
+
+        // Выбор режима на стартовом экране
+        function selectMode(mode) {
+            selectedMode = mode;
+            const cards = document.querySelectorAll('.mode-card');
+            cards.forEach(card => {
+                const isTarget = card.getAttribute('data-mode') === mode;
+                if (isTarget) {
+                    card.classList.remove('border-slate-800', 'bg-slate-900/60', 'hover:border-slate-700');
+                    card.classList.add('border-indigo-500', 'bg-indigo-950/30');
+                } else {
+                    card.classList.remove('border-indigo-500', 'bg-indigo-950/30');
+                    card.classList.add('border-slate-800', 'bg-slate-900/60', 'hover:border-slate-700');
+                }
+            });
+
+            const count = getQuestionsByMode(mode).length;
+            startBtnCountEl.textContent = count;
+        }
+
+        function getQuestionsByMode(mode) {
+            if (mode === 'exam') return allQuestions.filter(q => q.category === 'exam');
+            if (mode === 'labs') return allQuestions.filter(q => q.category === 'labs');
+            return [...allQuestions];
+        }
+
+        // Перемешивание массива (алгоритм Фишера-Йетса)
+        function shuffleArray(arr) {
+            const copy = [...arr];
+            for (let i = copy.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [copy[i], copy[j]] = [copy[j], copy[i]];
+            }
+            return copy;
+        }
+
+        // Возврат на главный экран
+        function goHome() {
+            quizScreen.classList.add('hidden');
+            quizScreen.classList.remove('flex');
+            resultScreen.classList.add('hidden');
+            homeBtn.classList.add('hidden');
+            headerScoreBadge.classList.add('hidden');
+            headerScoreBadge.classList.remove('flex');
+            startScreen.classList.remove('hidden');
+        }
+
+        // Запуск теста
+        function startQuiz(shuffle = false, customList = null) {
+            if (customList) {
+                currentQuestions = [...customList];
+            } else {
+                const baseList = getQuestionsByMode(selectedMode);
+                currentQuestions = shuffle ? shuffleArray(baseList) : baseList;
+            }
+
+            currentIndex = 0;
+            score = 0;
+            wrongQuestions = [];
+            isAnswered = false;
+
+            liveScoreEl.textContent = '0';
+            totalQuestionsTopEl.textContent = currentQuestions.length;
+            totalQNumEl.textContent = currentQuestions.length;
+
+            startScreen.classList.add('hidden');
+            resultScreen.classList.add('hidden');
+            quizScreen.classList.remove('hidden');
+            quizScreen.classList.add('flex');
+
+            homeBtn.classList.remove('hidden');
+            headerScoreBadge.classList.remove('hidden');
+            headerScoreBadge.classList.add('flex');
+
+            renderQuestion();
+        }
+
+        // Повторное прохождение только ошибочных вопросов
+        function retryMistakes() {
+            if (wrongQuestions.length > 0) {
+                startQuiz(false, wrongQuestions);
+            }
+        }
+
+        // Отрисовка текущего вопроса
+        function renderQuestion() {
+            isAnswered = false;
+            const q = currentQuestions[currentIndex];
+
+            // Обновление шапки и прогресс-бара
+            currentQNumEl.textContent = currentIndex + 1;
+            topicBadgeEl.textContent = q.topic;
+
+            // Бейдж источника вопроса
+            if (q.category === 'exam') {
+                sourceBadgeEl.textContent = 'Из билета КР';
+                sourceBadgeEl.className = 'px-2.5 py-0.5 rounded-lg bg-amber-500/15 text-amber-300 border border-amber-500/30 font-semibold';
+            } else {
+                sourceBadgeEl.textContent = 'По методичке ЛР №5';
+                sourceBadgeEl.className = 'px-2.5 py-0.5 rounded-lg bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 font-semibold';
+            }
+
+            const progressPercent = (currentIndex / currentQuestions.length) * 100;
+            progressBarEl.style.width = `${Math.max(progressPercent, 4)}%`;
+
+            // Текст вопроса
+            questionTextEl.textContent = q.question;
+
+            // Блок кода с подсветкой синтаксиса
+            if (q.code) {
+                codeWrapperEl.classList.remove('hidden');
+                questionCodeEl.textContent = q.code;
+                questionCodeEl.removeAttribute('data-highlighted');
+                hljs.highlightElement(questionCodeEl);
+            } else {
+                codeWrapperEl.classList.add('hidden');
+            }
+
+            // Скрываем пояснение и кнопку "Далее"
+            explanationBoxEl.classList.add('hidden');
+            nextBtnWrapperEl.classList.add('hidden');
+
+            // Меняем текст кнопки на последнем вопросе
+            if (currentIndex === currentQuestions.length - 1) {
+                nextBtnEl.innerHTML = '<span>Завершить и посмотреть итоги</span><span>🏁</span>';
+            } else {
+                nextBtnEl.innerHTML = '<span>Следующий вопрос</span><span>→</span>';
+            }
+
+            // Генерация кнопок вариантов ответа
+            optionsContainerEl.innerHTML = '';
+
+            q.options.forEach((optText, idx) => {
+                const btn = document.createElement('button');
+                btn.className = 'option-btn w-full text-left p-3.5 sm:p-4 rounded-xl bg-slate-900/80 hover:bg-slate-800/90 border border-slate-700/80 hover:border-indigo-500/50 transition-all flex items-start gap-3.5 cursor-pointer group';
+                btn.onclick = () => selectAnswer(idx);
+
+                btn.innerHTML = `
+                    <span class="opt-letter w-7 h-7 rounded-lg bg-slate-800 group-hover:bg-indigo-500/20 border border-slate-700 group-hover:border-indigo-500/40 text-slate-300 group-hover:text-indigo-300 font-mono text-xs font-bold flex items-center justify-center shrink-0 transition-colors mt-0.5">
+                        ${idx + 1}
+                    </span>
+                    <span class="text-sm sm:text-base text-slate-200 leading-snug flex-1">${escapeHtml(optText)}</span>
+                `;
+                optionsContainerEl.appendChild(btn);
+            });
+        }
+
+        // Экранирование HTML-символов
+        function escapeHtml(str) {
+            return str
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+        }
+
+        // Обработка выбора ответа
+        function selectAnswer(selectedIndex) {
+            if (isAnswered) return;
+            isAnswered = true;
+
+            const q = currentQuestions[currentIndex];
+            const isCorrect = selectedIndex === q.correct;
+            const buttons = optionsContainerEl.querySelectorAll('.option-btn');
+
+            const progressPercent = ((currentIndex + 1) / currentQuestions.length) * 100;
+            progressBarEl.style.width = `${progressPercent}%`;
+
+            buttons.forEach((btn, idx) => {
+                btn.disabled = true;
+                btn.classList.remove('cursor-pointer', 'hover:bg-slate-800/90', 'hover:border-indigo-500/50');
+                const letterBadge = btn.querySelector('.opt-letter');
+
+                if (idx === q.correct) {
+                    btn.classList.remove('bg-slate-900/80', 'border-slate-700/80');
+                    btn.classList.add('bg-emerald-950/50', 'border-emerald-500/70');
+                    letterBadge.classList.remove('bg-slate-800', 'border-slate-700', 'text-slate-300');
+                    letterBadge.classList.add('bg-emerald-500', 'border-emerald-400', 'text-slate-950');
+                    letterBadge.textContent = '✓';
+                } else if (idx === selectedIndex && !isCorrect) {
+                    btn.classList.remove('bg-slate-900/80', 'border-slate-700/80');
+                    btn.classList.add('bg-rose-950/50', 'border-rose-500/70');
+                    letterBadge.classList.remove('bg-slate-800', 'border-slate-700', 'text-slate-300');
+                    letterBadge.classList.add('bg-rose-500', 'border-rose-400', 'text-white');
+                    letterBadge.textContent = '✕';
+                } else {
+                    btn.classList.add('opacity-50');
+                }
+            });
+
+            if (isCorrect) {
+                score++;
+                liveScoreEl.textContent = score;
+                explanationBoxEl.className = 'mt-6 rounded-xl p-4 sm:p-5 border bg-emerald-950/30 border-emerald-500/40 animate-fade-in';
+                explanationIconEl.className = 'w-7 h-7 rounded-lg flex items-center justify-center shrink-0 font-bold text-sm mt-0.5 bg-emerald-500/20 text-emerald-400';
+                explanationIconEl.textContent = '✓';
+                explanationTitleEl.className = 'font-bold text-sm sm:text-base mb-1 text-emerald-300';
+                explanationTitleEl.textContent = 'Верно!';
+            } else {
+                wrongQuestions.push(q);
+                explanationBoxEl.className = 'mt-6 rounded-xl p-4 sm:p-5 border bg-rose-950/30 border-rose-500/40 animate-fade-in';
+                explanationIconEl.className = 'w-7 h-7 rounded-lg flex items-center justify-center shrink-0 font-bold text-sm mt-0.5 bg-rose-500/20 text-rose-400';
+                explanationIconEl.textContent = '!';
+                explanationTitleEl.className = 'font-bold text-sm sm:text-base mb-1 text-rose-300';
+                explanationTitleEl.textContent = 'Ошибка — смотри разбор:';
+            }
+
+            explanationTextEl.textContent = q.explanation;
+            nextBtnWrapperEl.classList.remove('hidden');
+        }
+
+        // Переход к следующему вопросу или экрану результатов
+        function nextQuestion() {
+            if (currentIndex < currentQuestions.length - 1) {
+                currentIndex++;
+                renderQuestion();
+            } else {
+                showResults();
+            }
+        }
+
+        // Отображение финального экрана
+        function showResults() {
+            quizScreen.classList.add('hidden');
+            quizScreen.classList.remove('flex');
+            resultScreen.classList.remove('hidden');
+
+            const total = currentQuestions.length;
+            const wrongCount = total - score;
+            const percent = Math.round((score / total) * 100);
+
+            document.getElementById('final-correct').textContent = score;
+            document.getElementById('final-wrong').textContent = wrongCount;
+            document.getElementById('final-percent').textContent = `${percent}%`;
+
+            const emojiEl = document.getElementById('result-emoji');
+            const subtitleEl = document.getElementById('result-subtitle');
+
+            if (percent >= 90) {
+                emojiEl.textContent = '🏆';
+                subtitleEl.textContent = 'Отличный результат! Билет и методичка усвоены на пятёрку.';
+            } else if (percent >= 70) {
+                emojiEl.textContent = '💪';
+                subtitleEl.textContent = 'Хорошая подготовка! Разбери пару ловушек ниже, чтобы сдать без единой ошибки.';
+            } else if (percent >= 50) {
+                emojiEl.textContent = '📚';
+                subtitleEl.textContent = 'База есть, но на ловушках с компиляцией можно потерять баллы. Нажми «Отработать ошибки».';
+            } else {
+                emojiEl.textContent = '🛠️';
+                subtitleEl.textContent = 'Стоит прогнать ошибки ещё раз — все пояснения с разбором ниже.';
+            }
+
+            const retryMistakesBtn = document.getElementById('retry-mistakes-btn');
+            const mistakesCountEl = document.getElementById('mistakes-count');
+            if (wrongQuestions.length > 0) {
+                retryMistakesBtn.classList.remove('hidden');
+                mistakesCountEl.textContent = wrongQuestions.length;
+            } else {
+                retryMistakesBtn.classList.add('hidden');
+            }
+
+            const weakListEl = document.getElementById('weak-topics-list');
+            weakListEl.innerHTML = '';
+
+            if (wrongQuestions.length === 0) {
+                weakListEl.innerHTML = `
+                    <div class="p-4 rounded-xl bg-emerald-950/30 border border-emerald-500/30 text-emerald-300 text-sm flex items-center gap-3">
+                        <span class="text-xl">✨</span>
+                        <span>Ни одной ошибки! Ты готов к защите и контрольной работе.</span>
+                    </div>
+                `;
+            } else {
+                wrongQuestions.forEach((wq) => {
+                    const tag = wq.category === 'exam' ? 'Из билета КР' : 'По методичке ЛР №5';
+                    const item = document.createElement('div');
+                    item.className = 'p-3.5 rounded-xl bg-slate-900/80 border border-slate-800 flex flex-col gap-1';
+                    item.innerHTML = `
+                        <div class="flex flex-wrap items-center justify-between gap-2">
+                            <span class="text-xs font-semibold text-rose-400">✕ ${escapeHtml(wq.topic)}</span>
+                            <span class="text-[11px] px-2 py-0.5 rounded bg-slate-800 text-slate-400">${tag}</span>
+                        </div>
+                        <p class="text-xs sm:text-sm text-slate-200 font-medium">${escapeHtml(wq.question)}</p>
+                        <p class="text-xs text-slate-400 mt-1 leading-relaxed"><strong class="text-emerald-400">Правильный ответ:</strong> ${escapeHtml(wq.options[wq.correct])}</p>
+                    `;
+                    weakListEl.appendChild(item);
+                });
+            }
+        }
+
+        // Горячие клавиши: 1-4 для выбора ответа, Enter / Пробел для перехода дальше
+        document.addEventListener('keydown', (e) => {
+            if (quizScreen.classList.contains('hidden')) return;
+
+            if (!isAnswered && ['1', '2', '3', '4'].includes(e.key)) {
+                const idx = parseInt(e.key, 10) - 1;
+                const q = currentQuestions[currentIndex];
+                if (q && idx < q.options.length) {
+                    selectAnswer(idx);
+                }
+            } else if (isAnswered && (e.key === 'Enter' || e.key === ' ')) {
+                e.preventDefault();
+                nextQuestion();
+            }
+        });
+    </script>
+</body>
+</html>
